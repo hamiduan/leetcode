@@ -1,0 +1,105 @@
+# Definition for singly-linked list.
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
+        
+class Solution:
+    def addTwoNumbers(self, l1:ListNode, l2:ListNode) -> ListNode:
+        head = ListNode(0) #初始化链表头节点为0
+        node = head # 节点为头部
+        carry = 0 # 初始化进位
+        s = 0 # 初始化和为0
+        while(l1 or l2): #遍历l1 l2
+            val1 = l1.val if l1 else 0 # l1位赋值给val1
+            val2 = l2.val if l2 else 0 # l2位赋值给val2
+            s = val1 + val2 + carry #对应位数字相加并加进位
+            carry = s // 10 #更新进位 整除10
+            val = s % 10 
+            node.next = ListNode(val)
+            
+            if l1:
+                l1 = l1.next # l1向右滑动
+            if l2:
+                l2 = l2.next # l2向右滑动
+            node = node.next # 节点向下滑动
+        if carry != 0:
+            node.next = ListNode(1)
+        return head.next
+# 只提交以上部分，以下为测试部分
+# ---------------------------- #
+# 配置ListNode操作类
+class ListNode_handle:               # 链表操作类型
+    def __init__(self, node):
+         self.head = node            # 该类需要初始化头节点和当前节点。即用一个链表的头结点来实例化，可以用ListNode_handle(None)来实例化一个空链表
+         self.cur_node = node
+
+
+    def add(self, data):             # 添加结点操作，该结点的数值为data
+        node = ListNode(None)        # 新建ListNode类型
+        node.val = data
+        node.next = None
+        if self.head == None:        # 若当前链表为空，则直接将其作为头结点
+            self.head = node
+            self.cur_node = node
+        else:                        # 否则将该结点连到后面，将当前结点更新
+            self.cur_node.next = node
+            self.cur_node = self.cur_node.next
+        return self.head
+
+
+    def insert_i(self, i, data):     # 在第i个位置插入一个数值为data的结点
+        node = ListNode(None)
+        node.val = data
+        node.next = None
+
+        curr_node = self.head
+        for j in range(i-1):         # 索引到位置i
+            curr_node = curr_node.next
+        node.next = curr_node.next
+        curr_node.next = node
+
+
+    def delete_i(self,i):            # 删除位置为i的结点
+
+        curr_node = self.head
+        for j in range(i-1):         # 索引到位置为i的结点
+            curr_node = curr_node.next
+        curr_node.next = curr_node.next.next
+
+
+    def print_node(self,node):       # 从头开始打印所有结点的数值
+        while node:
+            print(node.val, end=' ')
+            node = node.next
+        print(end='\n')
+
+
+    def find_node(self, value):      # 寻找链表中是否存在数值value
+        if self.head == None:
+            return False
+        else:
+            node = self.head
+            while(node):
+                if node.val == value:
+                    return True
+                else:
+                    node = node.next
+            return False
+# 测试
+l1 = ListNode_handle(None)
+s1 = [1,2,6,8,4]
+for i in s1:
+    l1.add(i)
+l1.print_node(l1.head)
+
+l2 = ListNode_handle(None)
+s2 = [3,3,5,8,2,2]
+for i in s2:
+    l2.add(i)
+l2.print_node(l2.head)
+
+s = Solution()
+head = s.addTwoNumbers(l1.head, l2.head)
+listnode = ListNode_handle(None)
+listnode.print_node(head)
