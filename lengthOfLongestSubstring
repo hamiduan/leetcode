@@ -1,0 +1,55 @@
+#双指针 滑动窗口
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        rk,ans = -1,0
+        occ = set()
+        n = len(s)
+        for i in range(n):
+            if i !=0:
+                occ.remove(s[i-1])
+            while rk+1<n and s[rk+1] not in occ:
+                occ.add(s[rk+1])
+                rk += 1
+            ans = max(ans, rk-i+1)
+        return ans
+#92ms,13.8mb O(n), O(∣Σ∣)
+
+#暴力解法
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if s == '':
+            return 0
+        if len(s) == 1:
+            return 1
+        def find_left(s,i):
+            j = i-1
+            tmp_str = s[i]
+            while j>=0 and s[j] not in tmp_str:
+                tmp_str += s[j]
+                j -= 1
+            return len(tmp_str)
+        length = 0
+        for i in range(len(s)):
+            length = max(length,find_left(s,i))
+        return length
+#572 ms 13.6 MB
+
+#字典索引值比较
+from collections import defaultdict
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s:
+            return 0
+        loc_dict = defaultdict(lambda:-1) #值为-1的dict
+        start = 0 #左指针为0
+        ans = 0
+        for end,item in enumerate(s): # end 为序号，item为字符
+            if loc_dict[item] >= start: #第一个重复的元素索引值会比start要小，跳出if
+                ans =max(ans,end-start)
+                start = loc_dict[item]+1 #左指针加1
+            loc_dict[item] = end
+        #直到最后无重复子串
+        ans = max(ans, end-start+1)
+        return ans
+#执行用时 :64 ms, 在所有 Python3 提交中击败了92.73%的用户
+#内存消耗 :13.8 MB, 在所有 Python3 提交中击败了5.88%的用户
