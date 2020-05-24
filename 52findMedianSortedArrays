@@ -1,0 +1,28 @@
+class Solution:
+    def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
+        def getKthElement(k):
+            index1, index2 = 0,0 #初始化指针
+            #特殊情况
+            while True:
+                if index1 == m: #当达到A最大长度
+                    return nums2[index2 + k-1] #返回B的中位数
+                if index2 == n: #当达到B最大长度 
+                    return nums1[index1 + k-1] #返回A的中位数
+                if k == 1:
+                    return min(nums1[index1], nums2[index2])
+            #正常情况
+                newIndex1 = min(index1 + k // 2 - 1, m-1) #获取k/2 -1的值
+                newIndex2 = min(index2 + k // 2 - 1, n-1) #获取k/2 -1的值
+                pivot1, pivot2 = nums1[newIndex1], nums2[newIndex2] # 获取当前值
+                if pivot1 < pivot2: # 对比A和B组当前值大小 若A小则去除K/2-1 若B小则去除B的K/2-1
+                    k-= newIndex1 -index1 +1 #去除newIndex1前元素
+                    index1 = newIndex1 + 1 #每次向右挪一个位置
+                else:
+                    k-= newIndex2 - index2 +1
+                    index2 = newIndex2 +1
+        m,n = len(nums1) ,len(nums2)
+        totalLength = m + n
+        if totalLength % 2 == 1:
+            return getKthElement((totalLength + 1) // 2)
+        else:
+            return (getKthElement(totalLength // 2) + getKthElement(totalLength //2 +1)) / 2
